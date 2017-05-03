@@ -1,0 +1,7 @@
+{
+     "white": {
+         colors: {
+             "background":                  "rgb(0xff, 0xff, 0xff)"
+         }
+     }
+ }

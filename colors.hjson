@@ -1,0 +1,13 @@
+{
+     "go home, you're drunk": {
+         colors: {
+             "background":                  "rgb(0xaa, 0xaa, 0xaa)"
+             "hdr.foreground":              "rgb(0xc0, 0, 0)"
+             "hdr.background":              "rgb(0, 0xc0, 0)"
+             "text.foreground":             "0xffff0000"
+             "modified.text.altbackground": "rgb(0xac, 0xac, 0xac)"
+             "scroll.fov.background":       "argb(0x66, 0x11, 0x88, 0x00)"
+         }
+     }
+ }
+
