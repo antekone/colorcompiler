@@ -1,34 +1,36 @@
+# typed: true
+
 require 'optparse'
 require 'hjson'
 
-def main(args)
+def main(_args)
   options = {}
-  filenames = OptionParser.new { |opts|
-    opts.banner = "usage: Compiler.rb [options] filenames..."
+  filenames = OptionParser.new do |opts|
+    opts.banner = 'usage: Compiler.rb [options] filenames...'
 
-    opts.on("-h", "--help", "Show this help screen") { |v|
-      puts "ColorCompiler v1.1 (C)opyright by Grzegorz Antoniak"
-      puts ""
+    opts.on('-h', '--help', 'Show this help screen') do
+      puts 'ColorCompiler v1.1 (C)opyright by Grzegorz Antoniak'
+      puts ''
       puts opts
-      puts ""
-      puts "All filenames will be merged to one output file."
+      puts ''
+      puts 'All filenames will be merged to one output file.'
       exit 1
-    }
+    end
 
-    opts.on("-o", "--output FILENAME", "Generate file named FILENAME") { |name|
+    opts.on('-o', '--output FILENAME', 'Generate file named FILENAME') do |name|
       options[:output] = name
-    }
-  }.parse!()
+    end
+  end.parse!
 
-  if !options.has_key?(:output)
-    puts "Error: no `--output` switch found! I need it."
-    puts "Use `--help` to get some help."
+  unless options.key?(:output)
+    puts 'Error: no `--output` switch found! I need it.'
+    puts 'Use `--help` to get some help.'
     exit 1
   end
 
-  if filenames.size == 0
-    puts "Error: no input file was specified."
-    puts "Use `--help` to get some help."
+  if filenames.empty?
+    puts 'Error: no input file was specified.'
+    puts 'Use `--help` to get some help.'
     exit 1
   end
 
@@ -37,29 +39,23 @@ end
 
 def run(filenames, options)
   context = {}
-  filenames.each() { |filename|
-    compile_file(context, filename)
-  }
-
+  filenames.each { |filename| compile_file(context, filename) }
   generate_binary(context, options[:output])
 end
 
 def compile_file(context, filename)
-  File.open(filename) { |fp|
-    compile_hjson(context, Hjson.parse(fp.read))
-  }
+  File.open(filename) { |fp| compile_hjson(context, Hjson.parse(fp.read)) }
 end
 
 def compile_hjson(context, hjson)
-  hjson.each() do |theme_object|
+  hjson.each do |theme_object|
     theme_name, theme_object = theme_object
-
     add_theme_object(context, theme_name, theme_object)
   end
 end
 
 def add_theme_object(context, theme_name, theme_object)
-  return if context.has_key?(theme_name)
+  return if context.key?(theme_name)
 
   puts("Adding theme '#{theme_name}'...")
   context[theme_name] = theme_object
@@ -68,19 +64,17 @@ end
 def build_intern_dict(context)
   intern = Hash.new(0)
 
-  context.each() { |theme_name, theme_object|
+  context.each do |theme_name, theme_object|
     intern[theme_name] += 1
-    theme_object['colors'].each() { |color_name, color_string|
-      intern[color_name] += 1
-    }
-  }
+    theme_object['colors'].each { |color_name, _color_string| intern[color_name] += 1 }
+  end
 
   intern
 end
 
 def make_seq(intern)
   seq = []
-  intern.each() do |name, count|
+  intern.each do |name, _count|
     seq << name
   end
   seq
